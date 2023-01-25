@@ -4,24 +4,15 @@ declare(strict_types=1);
 
 namespace Lillik\PriceDecimal\Model\Plugin;
 
+use Lillik\PriceDecimal\Model\Currency as SubjectCurrency;
+
 class Currency extends PriceFormatPluginAbstract
 {
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param \Magento\Framework\CurrencyInterface $subject
-     * @param array                                ...$args
-     *
-     * @return array
-     */
-    public function beforeToCurrency(
-        \Lillik\PriceDecimal\Model\Currency $subject,
-        ...$arguments
-    ) {
+    public function beforeToCurrency(SubjectCurrency $subject, float|int $value = null, array $options = []): array
+    {
         if ($this->getConfig()->isEnable()) {
-            $arguments[1]['precision'] = $subject->getPricePrecision();
+            $options['precision'] = $subject->getPricePrecision();
         }
-        return $arguments;
+        return $options;
     }
 }

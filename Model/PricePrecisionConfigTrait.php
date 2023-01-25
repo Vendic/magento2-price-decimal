@@ -4,22 +4,16 @@ declare(strict_types=1);
 
 namespace Lillik\PriceDecimal\Model;
 
+use Lillik\PriceDecimal\Model\ConfigInterface;
+
 trait PricePrecisionConfigTrait
 {
-
-
-    /**
-     * @return \Lillik\PriceDecimal\Model\ConfigInterface
-     */
-    public function getConfig()
+    public function getConfig(): ConfigInterface
     {
         return $this->moduleConfig;
     }
 
-    /**
-     * @return int|mixed
-     */
-    public function getPricePrecision()
+    public function getPricePrecision(): int
     {
         if ($this->getConfig()->canShowPriceDecimal()) {
             return $this->getConfig()->getPricePrecision();

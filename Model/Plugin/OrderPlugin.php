@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace Lillik\PriceDecimal\Model\Plugin;
 
+use Magento\Sales\Model\Order;
+
 class OrderPlugin extends PriceFormatPluginAbstract
 {
-    /**
-     * @param \Magento\Sales\Model\Order $subject
-     * @param array ...$args
-     * @return array
-     */
     public function beforeFormatPricePrecision(
-        \Magento\Sales\Model\Order $subject,
-        ...$args
-    ) {
+        Order $subject,
+        int|float $price,
+        int $precision,
+        bool $addBrackets = false
+    ): array {
         //is enabled
         if ($this->getConfig()->isEnable()) {
             //change the precision
-            $args[1] = $this->getPricePrecision();
+            $precision = $this->getPricePrecision();
         }
 
-        return $args;
+        return [$price, $precision, $addBrackets];
     }
 }

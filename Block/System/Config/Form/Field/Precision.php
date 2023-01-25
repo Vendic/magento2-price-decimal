@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 namespace Lillik\PriceDecimal\Block\System\Config\Form\Field;
 
+use Magento\Framework\Option\ArrayInterface;
 
-class Precision implements \Magento\Framework\Option\ArrayInterface
+class Precision implements ArrayInterface
 {
-
-    /**
-     * Return array of options as value-label pairs
-     *
-     * @return array Format: array(array('value' => '<value>', 'label' => '<label>'), ...)
-     */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
             ['value' => 1, 'label' => __('1')],

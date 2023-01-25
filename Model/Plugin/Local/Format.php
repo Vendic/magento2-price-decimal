@@ -5,19 +5,11 @@ declare(strict_types=1);
 namespace Lillik\PriceDecimal\Model\Plugin\Local;
 
 use Lillik\PriceDecimal\Model\Plugin\PriceFormatPluginAbstract;
+use Magento\Framework\Locale\FormatInterface;
 
 class Format extends PriceFormatPluginAbstract
 {
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param $subject
-     * @param $result
-     *
-     * @return mixed
-     */
-    public function afterGetPriceFormat($subject, $result)
+    public function afterGetPriceFormat(FormatInterface $subject, array $result): array
     {
         $precision = $this->getPricePrecision();
 

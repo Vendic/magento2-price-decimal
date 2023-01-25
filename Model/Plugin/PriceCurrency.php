@@ -4,87 +4,100 @@ declare(strict_types=1);
 
 namespace Lillik\PriceDecimal\Model\Plugin;
 
+use Magento\Directory\Model\PriceCurrency as SubjectPriceCurrency;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
+use Magento\Framework\App\ScopeInterface;
+use Magento\Framework\Model\AbstractModel;
+
 class PriceCurrency extends PriceFormatPluginAbstract
 {
-
     /**
-     * {@inheritdoc}
+     * @param SubjectPriceCurrency $subject
+     * @param float|int $amount
+     * @param bool $includeContainer
+     * @param int $precision
+     * @param null|string|bool|int|ScopeInterface $scope
+     * @param AbstractModel|string|null $currency
      */
     public function beforeFormat(
-        \Magento\Directory\Model\PriceCurrency $subject,
-        ...$args
-    ) {
+        SubjectPriceCurrency $subject,
+        $amount,
+        bool $includeContainer = true,
+        int $precision = PriceCurrencyInterface::DEFAULT_PRECISION,
+        $scope = null,
+        $currency = null
+    ): array {
         if ($this->getConfig()->isEnable()) {
             // add the optional arg
-            if (!isset($args[1])) {
-                $args[1] = true;
+            if (!$includeContainer) {
+                $includeContainer = true;
             }
             // Precision argument
-            $args[2] = $this->getPricePrecision();
+            $precision = $this->getPricePrecision();
         }
 
-        return $args;
+        return [$amount, $includeContainer, $precision, $scope, $currency];
     }
 
-    /**
-     * @param \Magento\Directory\Model\PriceCurrency $subject
-     * @param callable $proceed
-     * @param $price
-     * @param array ...$args
-     * @return float
-     */
     public function aroundRound(
-        \Magento\Directory\Model\PriceCurrency $subject,
+        SubjectPriceCurrency $subject,
         callable $proceed,
-        $price,
-        ...$args
-    ) {
+        float $price
+    ): float {
         if ($this->getConfig()->isEnable()) {
-		
-			if (is_string($price)) {
-                $price = floatval($price);
-            }
-            return round($price, $this->getPricePrecision());
+//            if (is_string($price)) {
+//                $price = floatval($price);
+//            }
 
+            return round($price, $this->getPricePrecision());
         } else {
             return $proceed($price);
         }
     }
 
     /**
-     * @param \Magento\Directory\Model\PriceCurrency $subject
-     * @param array ...$args
+     * @param SubjectPriceCurrency $subject
+     * @param float|int $amount
+     * @param bool $includeContainer
+     * @param int $precision
+     * @param null|string|bool|int|ScopeInterface $scope
+     * @param AbstractModel|string|null $currency
      * @return array
      */
     public function beforeConvertAndFormat(
-        \Magento\Directory\Model\PriceCurrency $subject,
-        ...$args
-    ) {
+        SubjectPriceCurrency $subject,
+        $amount,
+        bool $includeContainer = true,
+        int $precision = PriceCurrencyInterface::DEFAULT_PRECISION,
+        $scope = null,
+        $currency = null
+    ): array {
         if ($this->getConfig()->isEnable()) {
-            // add the optional args
-            $args[1] = isset($args[1])? $args[1] : null;
-            $args[2] = intval($this->getPricePrecision());
+            $precision = (int)$this->getPricePrecision();
         }
 
-        return $args;
+        return [$amount, $includeContainer, $precision, $scope, $currency];
     }
 
     /**
-     * @param \Magento\Directory\Model\PriceCurrency $subject
-     * @param array ...$args
+     * @param SubjectPriceCurrency $subject
+     * @param float|int $amount
+     * @param null|string|bool|int|ScopeInterface $scope
+     * @param AbstractModel|string|null $currency
+     * @param int $precision
      * @return array
      */
     public function beforeConvertAndRound(
-        \Magento\Directory\Model\PriceCurrency $subject,
-        ...$args
-    ) {
+        SubjectPriceCurrency $subject,
+        $amount,
+        $scope = null,
+        $currency = null,
+        int $precision = PriceCurrencyInterface::DEFAULT_PRECISION
+    ): array {
         if ($this->getConfig()->isEnable()) {
-            //add optional args
-            $args[1] = isset($args[1])? $args[1] : null;
-            $args[2] = isset($args[2])? $args[2] : null;
-            $args[3] = $this->getPricePrecision();
+            $precision = $this->getPricePrecision();
         }
 
-        return $args;
+        return [$amount, $scope, $currency, $precision];
     }
 }
