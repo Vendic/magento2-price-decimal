@@ -15,7 +15,7 @@ class PriceCurrencyTest extends \PHPUnit\Framework\TestCase
 
     private $priceCurrencyMock;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->closureMock = function (...$args) {
             return number_format($args[0], $args[2]);

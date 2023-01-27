@@ -15,38 +15,14 @@ class Price extends AbstractModifier
 {
     use PricePrecisionConfigTrait;
 
-    /**
-     * @var LocatorInterface
-     */
-    private $locator;
-    /**
-     * @var DataPersistorInterface
-     */
-    private $dataPersistor;
-    /**
-     * @var ConfigInterface
-     */
-    private $moduleConfig;
-
-    /**
-     * Price constructor.
-     *
-     * @param LocatorInterface       $locator
-     * @param DataPersistorInterface $dataPersistor
-     * @param ConfigInterface        $moduleConfig
-     */
     public function __construct(
-        LocatorInterface $locator,
-        DataPersistorInterface $dataPersistor,
-        ConfigInterface $moduleConfig
+        private LocatorInterface $locator,
+        private DataPersistorInterface $dataPersistor,
+        private ConfigInterface $moduleConfig
     ) {
-
-        $this->locator = $locator;
-        $this->dataPersistor = $dataPersistor;
-        $this->moduleConfig = $moduleConfig;
     }
 
-    public function modifyData( array $data )
+    public function modifyData(array $data)
     {
         if (!$this->locator->getProduct()->getId() && $this->dataPersistor->get('catalog_product')) {
             return $this->resolvePersistentData($data);
@@ -60,7 +36,7 @@ class Price extends AbstractModifier
     /**
      * @inheritDoc
      */
-    public function modifyMeta( array $meta )
+    public function modifyMeta(array $meta): array
     {
         return $meta;
     }
@@ -69,21 +45,17 @@ class Price extends AbstractModifier
      * Format price to have only two decimals after delimiter
      *
      * @param mixed $value
-     * @return string
-     * @since 101.0.0
      */
-    protected function formatPrice($value)
+    protected function formatPrice($value): string
     {
-        return $value !== null ? number_format((float)$value, $this->getPricePrecision(), '.', '') : '';
+        return $value !== null
+            ? number_format((float)$value, $this->getPricePrecision(), '.', '') : '';
     }
 
     /**
      * Resolve data persistence
-     *
-     * @param array $data
-     * @return array
      */
-    private function resolvePersistentData(array $data)
+    private function resolvePersistentData(array $data): array
     {
         $persistentData = (array)$this->dataPersistor->get('catalog_product');
         $this->dataPersistor->clear('catalog_product');
